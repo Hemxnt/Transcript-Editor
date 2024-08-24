@@ -1,76 +1,89 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 
 const TranscriptEditor = ({ initialTranscript }) => {
   const [transcript, setTranscript] = useState(initialTranscript);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  // Added ref to store the timeout IDs
-  const timeoutsRef = useRef([]);
-  
-  // Handle text edit
+  const timeoutsRef = useRef([]); // Ref to store timeout IDs for managing playback timing
+
+
+// Function to handle text changes in the transcript (edit functionality)
   const handleTextChange = (index, newText) => {
-    const updatedTranscript = [...transcript];
-    updatedTranscript[index].word = newText;
-    setTranscript(updatedTranscript);
-  };
-
-  const togglePlayback = () => {
-    if (isPlaying) {
-      pauseTranscript();
-    } else {
-      playTranscript();
-    }
-  };
-
-  // Playback functionality
-  const playTranscript = () => {
-    setIsPlaying(true);
-    const startTime = Date.now() - currentTime;
-
-    transcript.forEach(({ start_time, duration }, index) => {
-      const timeout = setTimeout(() => {
-        setCurrentTime(start_time);
-        if (index === transcript.length - 1) {
-          setTimeout(() => {
-            setIsPlaying(false);
-            setCurrentTime(0); // Reset to the first word after playback ends
-          }, duration);
-        }
-      }, start_time - (Date.now() - startTime));
-      timeoutsRef.current.push(timeout);
+    setTranscript((prevTranscript) => {
+      const updatedTranscript = [...prevTranscript];
+      updatedTranscript[index].word = newText;
+      return updatedTranscript;
     });
   };
 
+
+ // Function to toggle playback state between play and pause
+  const togglePlayback = () => {
+    setIsPlaying((prevIsPlaying) => {
+      if (prevIsPlaying) {
+        pauseTranscript();
+      } else {
+        playTranscript();
+      }
+      return !prevIsPlaying;
+    });
+  };
+
+
+ // Function to handle the playback of the transcript
+  const playTranscript = () => {
+    const startTime = Date.now() - currentTime; // Calculate start time based on current playback time
+
+     // Loop through each word in the transcript to manage playback timing
+    transcript.forEach(({ start_time, duration }, index) => {
+      const timeout = setTimeout(() => {
+        setCurrentTime(start_time); // Update current time to the word's start time
+        if (index === transcript.length - 1) {
+          setTimeout(() => {
+            setIsPlaying(false);
+            setCurrentTime(0);
+          }, duration);
+        }
+      }, start_time - (Date.now() - startTime)); // Schedule the timeout based on start time
+      timeoutsRef.current.push(timeout); // Store the timeout ID in the ref
+    });
+  };
+
+
+// Function to pause the transcript playback
   const pauseTranscript = () => {
-    setIsPlaying(false);
-    // Clear all timeouts to stop the playback
     timeoutsRef.current.forEach(clearTimeout);
     timeoutsRef.current = [];
   };
 
-  // Cleanup effect to clear timeouts when component unmounts
+
+// Effect to clean up timeouts when the component unmounts
   useEffect(() => {
     return () => {
-      timeoutsRef.current.forEach(clearTimeout);
+      pauseTranscript(); // Clear timeouts on unmount
     };
   }, []);
 
 
   return (
+
     <div className="transcript-editor mx-60">
+
       <button
         onClick={togglePlayback}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="font-sans font-bold text-center uppercase text-xs py-3 px-6 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
       >
         {isPlaying ? 'Pause' : 'Play'}
       </button>
-      <div className="transcript mt-4">
+
+      <div className="transcript mt-4"> 
         {transcript.map(({ word, start_time, duration }, index) => (
           <span
             key={index}
-            className={`inline-block text-white px-1 py-1 m-1  ${
+            className={`inline-block text-white px-1 py-1 m-1 ${
               currentTime >= start_time && currentTime < start_time + duration
-                ? 'border-2 rounded-xl px-1 border-yellow-300'
+                ? 'border-2 rounded-lg px-1 border-yellow-300'
                 : 'border-2 border-transparent'
             }`}
             contentEditable

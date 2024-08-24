@@ -11,8 +11,6 @@ export const initialTranscript = [
   { word: 'and', start_time: 3500, duration: 250 },
   { word: 'editing', start_time: 3750, duration: 800 },
   { word: 'features.', start_time: 4550, duration: 650 },
-  
-  // New paragraph
   { word: 'With', start_time: 5200, duration: 300 },
   { word: 'this', start_time: 5500, duration: 200 },
   { word: 'transcript', start_time: 5700, duration: 500 },
@@ -41,8 +39,6 @@ export const initialTranscript = [
   { word: 'you', start_time: 14500, duration: 200 },
   { word: 'make', start_time: 14700, duration: 300 },
   { word: 'edits.', start_time: 15000, duration: 400 },
-
-  // Another new paragraph
   { word: 'Whether', start_time: 15400, duration: 400 },
   { word: 'you', start_time: 15800, duration: 200 },
   { word: 'are', start_time: 16000, duration: 200 },
