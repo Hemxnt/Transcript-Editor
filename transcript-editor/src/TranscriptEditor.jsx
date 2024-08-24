@@ -68,16 +68,16 @@ const TranscriptEditor = ({ initialTranscript }) => {
 
   return (
 
-    <div className="transcript-editor mx-60">
+    <div className="transcript-editor mx-4 sm:mx-16 md:mx-32 lg:mx-60">
 
       <button
         onClick={togglePlayback}
-        className="font-sans font-bold text-center uppercase text-xs py-3 px-6 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
+        className="font-sans font-bold text-center uppercase text-xs py-2 sm:py-3 px-4 sm:px-6 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
       >
         {isPlaying ? 'Pause' : 'Play'}
       </button>
 
-      <div className="transcript mt-4"> 
+      <div className="transcript mt-4 text-sm sm:text-base"> 
         {transcript.map(({ word, start_time, duration }, index) => (
           <span
             key={index}
