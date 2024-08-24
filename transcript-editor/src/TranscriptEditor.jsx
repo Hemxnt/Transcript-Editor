@@ -31,7 +31,10 @@ const TranscriptEditor = ({ initialTranscript }) => {
       const timeout = setTimeout(() => {
         setCurrentTime(start_time);
         if (index === transcript.length - 1) {
-          setTimeout(() => setIsPlaying(false), duration);
+          setTimeout(() => {
+            setIsPlaying(false);
+            setCurrentTime(0); // Reset to the first word after playback ends
+          }, duration);
         }
       }, start_time - (Date.now() - startTime));
       timeoutsRef.current.push(timeout);
@@ -54,7 +57,7 @@ const TranscriptEditor = ({ initialTranscript }) => {
 
 
   return (
-    <div className="transcript-editor">
+    <div className="transcript-editor mx-60">
       <button
         onClick={togglePlayback}
         className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -65,9 +68,9 @@ const TranscriptEditor = ({ initialTranscript }) => {
         {transcript.map(({ word, start_time, duration }, index) => (
           <span
             key={index}
-            className={`inline-block text-white px-2 py-1 m-1 rounded-2xl ${
+            className={`inline-block text-white px-1 py-1 m-1  ${
               currentTime >= start_time && currentTime < start_time + duration
-                ? 'border-2 border-yellow-400'
+                ? 'border-2 rounded-xl px-1 border-yellow-300'
                 : 'border-2 border-transparent'
             }`}
             contentEditable
